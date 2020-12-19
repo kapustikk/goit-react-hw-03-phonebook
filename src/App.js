@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import shortid from 'shortid';
-import phonebook from './components/phonebook.json';
+// import phonebook from './components/phonebook.json';
 import ContactForm from './components/Phonebook/ContactForm';
 import ContactList from './components/Phonebook/ContactList';
 import Filter from './components/Phonebook/Filter';
 
 class App extends Component {
   state = {
-    contacts: phonebook,
+    contacts: [],
     filter: '',
   };
 
@@ -40,6 +40,21 @@ class App extends Component {
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(normalizedFilter),
     );
+  };
+
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+  
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+   }
   };
 
   render() {
